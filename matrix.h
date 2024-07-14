@@ -29,6 +29,11 @@ vector get_row(matrix mat, unsigned int row);
 vector mat_mul_vec(matrix mat, vector vec);
 matrix mat_mul_mat(matrix m1, matrix m2);
 
+void swap_row(matrix *mat, unsigned int r1, unsigned int r2);
+void scalar_mul_row(matrix *mat, unsigned int r, double s);
+void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row);
+
+
 double det(matrix mat);
 double tr(matrix mat);
 

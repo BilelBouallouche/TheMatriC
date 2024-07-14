@@ -201,6 +201,53 @@ matrix mat_mul_mat(matrix m1, matrix m2)
     return res;
 }
 
+void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
+{
+    unsigned int rows = mat->rows;
+    if(r1 > rows || r2 > rows)
+    {
+        printf("pb de parametre sur swap_row\n");
+        return;
+    }
+    vector row1 = get_row(*mat, r1);
+    vector row2 = get_row(*mat, r2);
+    for(int i = 0; i < mat->cols; i++)
+    {
+        mat->elements[r1][i] = row2.coords[i];
+        mat->elements[r2][i] = row1.coords[i];
+    }
+    deallocate_vector(row1);
+    deallocate_vector(row2);
+}
+
+void scalar_mul_row(matrix *mat, unsigned int r, double s)
+{
+    unsigned int rows = mat->rows;
+    if(r > rows)
+    {
+        printf("pb de parametre sur swap_row\n");
+        return;
+    }
+    for(int i = 0; i < mat->rows; i++)
+    {
+        mat->elements[r][i] *= s;
+    }
+}
+
+void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row)
+{
+    unsigned int rows = mat->rows;
+    if(dest_row > rows || src_row > rows)
+    {
+        printf("pb de parametre sur swap_row\n");
+        return;
+    }
+    for(int i = 0; i < mat->cols; i++)
+    {
+        mat->elements[dest_row][i] += mat->elements[src_row][i];
+    }
+}
+
 double tr(matrix mat)
 {
     if(mat.rows != mat.cols)
