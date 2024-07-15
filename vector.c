@@ -190,3 +190,12 @@ void vector_pp(vector vec)
         printf("| %f |\n",  vec.coords[i]);
     }
 }
+
+
+void vector_to_array(vector vec, double* arr)
+{
+    for(int i = 0; i < vec.dim; i++)
+    {
+        arr[i] = vec.coords[i];
+    }
+}

@@ -39,4 +39,6 @@ bool are_vectors_orthogonal(vector u, vector v);
 
 void vector_pp(vector vec);
 
+void vector_to_array(vector vec, double* arr);
+
 #endif
