@@ -201,6 +201,8 @@ matrix mat_mul_mat(matrix m1, matrix m2)
     return res;
 }
 
+
+/*
 void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
 {
     unsigned int rows = mat->rows;
@@ -218,6 +220,23 @@ void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
     }
     deallocate_vector(row1);
     deallocate_vector(row2);
+}
+*/
+
+void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
+{
+    unsigned int rows = mat->rows;
+    if(r1 > rows || r2 > rows)
+    {
+        printf("pb de parametre sur swap_row\n");
+        return;
+    }
+    for(int i = 0; i < mat->cols; i++)
+    {
+        double r1_i = mat->elements[r1][i];
+        mat->elements[r1][i] = mat->elements[r2][i];
+        mat->elements[r2][i] = r1_i;
+    }
 }
 
 void scalar_mul_row(matrix *mat, unsigned int r, double s)

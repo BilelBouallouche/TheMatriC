@@ -11,8 +11,8 @@ int main()
     matrix mat = create_matrix_from_row_arrays(3, 3, arr1, arr2, arr3);
     printf("originale\n");
     matrix_pp(mat);
-    printf("\n add row 2 to row 1 \n");
-    add_row_to_row(&mat, 2, 1);
+    printf("\n swap 1 et 2 \n");
+    swap_row(&mat, 1, 2);
     matrix_pp(mat);
     deallocate_matrix(mat);
 }
