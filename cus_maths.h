@@ -17,4 +17,6 @@ const bool false = 0;
 double sum_on_double(double *to_sum, unsigned int size);
 
 
+void max_array(double* array, unsigned int size, double *max, unsigned int *max_index);
+
 #endif

@@ -9,3 +9,20 @@ double sum_on_double(double *to_sum, unsigned int size)
     }
     return res;
 }
+
+
+void max_array(double* array, unsigned int size, double *max, unsigned int *max_index)
+{
+    double current_max = array[0];
+    unsigned int current_max_index = 0;
+    for(int i = 1; i < size; i++)
+    {
+        if(current_max < array[i])
+        {
+            current_max = array[i];
+            current_max_index = i;
+        }
+    }
+    *max_index = current_max_index;
+    *max = current_max;
+}
