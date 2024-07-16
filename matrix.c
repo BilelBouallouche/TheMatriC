@@ -35,6 +35,7 @@ void matrix_pp(matrix mat)
         }
         printf(")\n");
     }
+    printf("\n");
 }
 
 matrix null_matrix(unsigned int rows, unsigned int cols)
@@ -253,7 +254,7 @@ void scalar_mul_row(matrix *mat, unsigned int r, double s)
     }
 }
 
-void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row)
+void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row, double s)
 {
     unsigned int rows = mat->rows;
     if(dest_row > rows || src_row > rows)
@@ -263,9 +264,107 @@ void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row)
     }
     for(int i = 0; i < mat->cols; i++)
     {
-        mat->elements[dest_row][i] += mat->elements[src_row][i];
+        mat->elements[dest_row][i] += s*mat->elements[src_row][i];
     }
 }
+
+/*
+void row_echelon_form(matrix *mat, bool verbose)
+{
+    unsigned int pivot_row = 0;
+    for(int j = 0; j < mat->cols; j++)
+    {
+        double max;
+        unsigned int max_index;
+        double *arr = malloc(sizeof(double)*(mat->rows - pivot_row));
+        for(int k = pivot_row+1; k < mat->rows; k++)
+        {
+            arr[k-pivot_row-1] = mat->elements[k][j];
+        }
+        max_abs_array(arr, mat->rows - pivot_row, &max, &max_index);
+        if(mat->elements[max_index][j] != 0)
+        {
+            pivot_row++;
+            double factor = 1/mat->elements[max_index][j];
+            scalar_mul_row(mat, max_index, factor);
+            if(max_index != pivot_row)
+            {
+                swap_row(mat, max_index, pivot_row);
+            }
+            for(int i = 0; i < mat->rows; i++)
+            {
+                if(i != pivot_row)
+                {
+                    factor *= -1.0;
+                    scalar_mul_row(mat, i, factor);
+                    add_row_to_row(mat, i, pivot_row);
+                }
+            }
+        }
+    }
+}
+*/
+
+
+unsigned int row_echelon_form(matrix *mat, bool verbose)
+{
+    int swap_counter = 0;
+    for(int k = 0; k < mat->cols; k++)
+    {
+        int pivot = k;
+        for(int i = k+1; i < mat->rows; i++)
+        {
+            if(abs(mat->elements[i][k]) > abs(mat->elements[pivot][k]))
+            {
+                pivot = i;
+            }
+        }
+        if(pivot != k)
+        {
+            swap_row(mat, k, pivot);
+            swap_counter++;
+            if(verbose)
+            {
+                printf("swapping row %u with row %u : ", k, pivot);
+                matrix_pp(*mat);
+            }
+        }
+        for(int i = k+1; i < mat->rows; i++)
+        {
+            double factor = -(mat->elements[i][k]/mat->elements[k][k]);
+            add_row_to_row(mat, i, k, factor);
+            if(verbose)
+            {
+                matrix_pp(*mat);
+            }
+        }
+    }
+    return swap_counter;
+}
+
+
+double det(matrix mat)
+{
+    if(mat.rows != mat.cols)
+    {
+        printf("pour calculer le determinant faut une matrice carrée\n");
+        return 0;
+    }
+
+    if(mat.rows == 2)
+    {
+        return mat.elements[0][0]*mat.elements[1][1] - mat.elements[0][1]*mat.elements[1][0];
+    }
+    matrix tmp = mat;
+    int swaps = row_echelon_form(&tmp, false);
+    double res = 1;
+    for(int i = 0; i < tmp.rows; i++)
+    {
+        res *= tmp.elements[i][i];
+    }
+    return pow(-1, swaps)*res;
+}
+
 
 double tr(matrix mat)
 {
@@ -279,4 +378,11 @@ double tr(matrix mat)
         res += mat.elements[i][i];
     }
     return res;
+}
+
+
+
+bool is_invertible(matrix mat)
+{
+    return (det(mat) != 0);
 }

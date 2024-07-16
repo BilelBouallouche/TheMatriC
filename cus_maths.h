@@ -5,18 +5,11 @@
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
-
-/*
-typedef unsigned char bool;
-const bool true = 1;
-const bool false = 0;
-*/
-
-
+#include <math.h>
 
 double sum_on_double(double *to_sum, unsigned int size);
 
 
-void max_array(double* array, unsigned int size, double *max, unsigned int *max_index);
+void max_abs_array(double* array, unsigned int size, double *max, unsigned int *max_index);
 
 #endif
