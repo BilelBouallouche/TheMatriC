@@ -5,10 +5,10 @@ matrix allocate_matrix(unsigned int rows, unsigned int cols)
     matrix mat;
     mat.rows = rows;
     mat.cols = cols;
-    mat.elements = malloc(sizeof(double*)*cols);
-    for(int i = 0; i < cols; i++)
+    mat.elements = malloc(sizeof(double*)*rows);
+    for(int i = 0; i < rows; i++)
     {
-        mat.elements[i] = malloc(sizeof(double) * rows);
+        mat.elements[i] = malloc(sizeof(double) * cols);
     }
     return mat;
 }
@@ -79,6 +79,20 @@ matrix create_matrix_from_row_arrays(unsigned int rows, unsigned int cols, ...)
         mat.elements[i] = row_i;
     }
     va_end(args);
+    return mat;
+}
+
+
+matrix create_matrix(unsigned int rows, unsigned int cols, double elem[rows][cols])
+{
+    matrix mat = allocate_matrix(rows, cols);
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            mat.elements[i][j] = elem[i][j];
+        }
+    }
     return mat;
 }
 
@@ -268,7 +282,7 @@ void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row, do
     }
 }
 
-unsigned int row_echelon_form(matrix *mat, bool verbose)
+unsigned int row_echelon_form(matrix *mat)
 {
     int swap_counter = 0;
     for(int k = 0; k < mat->cols; k++)
@@ -285,11 +299,6 @@ unsigned int row_echelon_form(matrix *mat, bool verbose)
         {
             swap_row(mat, k, pivot);
             swap_counter++;
-            if(verbose)
-            {
-                printf("swapping row %u with row %u : ", k, pivot);
-                matrix_pp(*mat);
-            }
         }
         for(int i = k+1; i < mat->rows; i++)
         {
@@ -297,10 +306,6 @@ unsigned int row_echelon_form(matrix *mat, bool verbose)
             {
                 double factor = -(mat->elements[i][k]/mat->elements[k][k]);
                 add_row_to_row(mat, i, k, factor);
-                if(verbose)
-                {
-                    matrix_pp(*mat);
-                }
             }
         }
     }
@@ -321,7 +326,7 @@ double det(matrix mat)
         return mat.elements[0][0]*mat.elements[1][1] - mat.elements[0][1]*mat.elements[1][0];
     }
     matrix tmp = mat;
-    int swaps = row_echelon_form(&tmp, false);
+    int swaps = row_echelon_form(&tmp);
     double res = 1;
     for(int i = 0; i < tmp.rows; i++)
     {
@@ -349,7 +354,7 @@ unsigned int rank(matrix mat)
 {
     unsigned int r = 0;
     matrix tmp = mat;
-    row_echelon_form(&tmp, false);
+    row_echelon_form(&tmp);
     matrix_pp(tmp);
     printf("\n");
     for(int i = 0; i < tmp.rows; i++)

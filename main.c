@@ -4,48 +4,32 @@
 
 int main()
 {
+    double m1[3][3] = {{1, 2, 3}, {0, 4, 5}, {0, 0, 6}};
+    double m2[3][3] = {{1, 0, 2}, {2, 4, -1}, {-2, 0, 2}};
+    double m3[4][4] = {{1, 0, 2, 3}, {2, 0, 4, 6}, {0, 2, 2, 0}, {1, 2, 4, 3}};
+    double m4[3][2] = {{31, 32}, {33, 34}, {35, 36}};
+    double m5[2][3] = {{1, 2, 3}, {4, 5, 6}};
 
-    double m1_arr1[] = {1, 2, 3};
-    double m1_arr2[] = {0, 4, 5};
-    double m1_arr3[] = {0, 0, 6};
-    matrix m1 = create_matrix_from_row_arrays(3, 3, m1_arr1, m1_arr2, m1_arr3);
-    double d1 = det(m1);
-    printf("det de m1 = %f\n", d1);
-
-    double m2_arr1[] = {1, 0, 2};
-    double m2_arr2[] = {2, 4, -1};
-    double m2_arr3[] = {-2, 0, 2};
-    matrix m2 = create_matrix_from_row_arrays(3, 3, m2_arr1, m2_arr2, m2_arr3);
-    double d2 = det(m2);
-    printf("det de m1 = %f\n", d2);
-
-    double m3_arr1[] = {1, 4, 4};
-    double m3_arr2[] = {2, 5, 6};
-    double m3_arr3[] = {0, 8, 9};
-    matrix m3 = create_matrix_from_row_arrays(3, 3, m3_arr1, m3_arr2, m3_arr3);
-    double d3 = det(m3);
-    printf("det de m3 = %f\n", d3);
-
-    
-    double m4_arr1[] = {0, 1, 1, 0};
-    double m4_arr2[] = {1, 0, 0, 1};
-    double m4_arr3[] = {1, 1, 0, 1};
-    double m4_arr4[] = {1, 1, 1, 0};
-    matrix m4 = create_matrix_from_row_arrays(4, 4, m4_arr1, m4_arr2, m4_arr3, m4_arr4);
-    double d4 = det(m4);
-    printf("det de m4 = %f\n", d4);
+    matrix matrices[] = {create_matrix(3, 3, m1), create_matrix(3, 3, m2), create_matrix(4, 4, m3), create_matrix(3, 2, m4), create_matrix(2, 3, m5)};
 
 
-    double m5_arr1[] = {1, 0, 2, 3};
-    double m5_arr2[] = {2, 0, 4, 6};
-    double m5_arr3[] = {0, 2, 2, 0};
-    double m5_arr4[] = {1, 2, 4, 3};
-    matrix m5 = create_matrix_from_row_arrays(4, 4, m5_arr1, m5_arr2, m5_arr3, m5_arr4);
-    printf("rang de m5 = %u\n", rank(m5));
+    for (int i = 0; i < 5; i++)
+    {
+        printf("Matrix %d before:\n", i + 1);
+        matrix_pp(matrices[i]);
+        row_echelon_form(&matrices[i]);
+        printf("Matrix %d row echelon form:\n", i + 1);
+        matrix_pp(matrices[i]);
+    }
 
-    deallocate_matrix(m1);
-    deallocate_matrix(m2);
- deallocate_matrix(m3);
-    deallocate_matrix(m4);
+    for(int i = 0; i < 5; i++)
+    {
+        printf("Det of matrix %d = %f \n", i+1, det(matrices[i]));
+    }
+
+    for(int i = 0; i < 5; i++)
+    {
+        deallocate_matrix(matrices[i]);
+    }
     
 }
