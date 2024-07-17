@@ -199,3 +199,15 @@ void vector_to_array(vector vec, double* arr)
         arr[i] = vec.coords[i];
     }
 }
+
+bool is_null_vec(vector v)
+{
+    for(int i = 0; i < v.dim; i++)
+    {
+        if(v.coords[i] != 0)
+        {
+            return false;
+        }
+    } 
+    return true;
+}

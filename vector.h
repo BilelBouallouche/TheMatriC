@@ -30,6 +30,8 @@ void oppose_coord(vector *vec);
 
 bool are_vectors_same_dim(vector u, vector v);
 bool are_vectors_equals(vector u, vector v);
+bool is_null_vec(vector v);
+
 
 double dot(vector u, vector v);
 

@@ -268,44 +268,6 @@ void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row, do
     }
 }
 
-/*
-void row_echelon_form(matrix *mat, bool verbose)
-{
-    unsigned int pivot_row = 0;
-    for(int j = 0; j < mat->cols; j++)
-    {
-        double max;
-        unsigned int max_index;
-        double *arr = malloc(sizeof(double)*(mat->rows - pivot_row));
-        for(int k = pivot_row+1; k < mat->rows; k++)
-        {
-            arr[k-pivot_row-1] = mat->elements[k][j];
-        }
-        max_abs_array(arr, mat->rows - pivot_row, &max, &max_index);
-        if(mat->elements[max_index][j] != 0)
-        {
-            pivot_row++;
-            double factor = 1/mat->elements[max_index][j];
-            scalar_mul_row(mat, max_index, factor);
-            if(max_index != pivot_row)
-            {
-                swap_row(mat, max_index, pivot_row);
-            }
-            for(int i = 0; i < mat->rows; i++)
-            {
-                if(i != pivot_row)
-                {
-                    factor *= -1.0;
-                    scalar_mul_row(mat, i, factor);
-                    add_row_to_row(mat, i, pivot_row);
-                }
-            }
-        }
-    }
-}
-*/
-
-
 unsigned int row_echelon_form(matrix *mat, bool verbose)
 {
     int swap_counter = 0;
@@ -331,11 +293,14 @@ unsigned int row_echelon_form(matrix *mat, bool verbose)
         }
         for(int i = k+1; i < mat->rows; i++)
         {
-            double factor = -(mat->elements[i][k]/mat->elements[k][k]);
-            add_row_to_row(mat, i, k, factor);
-            if(verbose)
+            if(mat->elements[k][k] != 0)
             {
-                matrix_pp(*mat);
+                double factor = -(mat->elements[i][k]/mat->elements[k][k]);
+                add_row_to_row(mat, i, k, factor);
+                if(verbose)
+                {
+                    matrix_pp(*mat);
+                }
             }
         }
     }
@@ -380,7 +345,25 @@ double tr(matrix mat)
     return res;
 }
 
-
+unsigned int rank(matrix mat)
+{
+    unsigned int r = 0;
+    matrix tmp = mat;
+    row_echelon_form(&tmp, false);
+    matrix_pp(tmp);
+    printf("\n");
+    for(int i = 0; i < tmp.rows; i++)
+    {
+        vector row_i = get_row(tmp, i);
+        if(!is_null_vec(row_i))
+        {
+            vector_pp(row_i);
+            printf("\n");
+            r++;
+        }
+    }
+    return r;
+}
 
 bool is_invertible(matrix mat)
 {

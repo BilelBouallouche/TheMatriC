@@ -40,4 +40,6 @@ double tr(matrix mat);
 
 bool is_invertible(matrix mat);
 
+unsigned int rank(matrix mat);
+
 #endif
