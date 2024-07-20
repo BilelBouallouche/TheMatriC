@@ -51,7 +51,7 @@ matrix null_matrix(unsigned int rows, unsigned int cols)
     return null;
 }
 
-matrix id(unsigned int n)
+matrix eye(unsigned int n)
 {
     matrix identity = null_matrix(n, n);
     for(int i = 0; i  < n; i++)
@@ -262,7 +262,7 @@ void scalar_mul_row(matrix *mat, unsigned int r, double s)
         printf("pb de parametre sur swap_row\n");
         return;
     }
-    for(int i = 0; i < mat->rows; i++)
+    for(int i = 0; i < mat->cols; i++)
     {
         mat->elements[r][i] *= s;
     }
@@ -312,6 +312,59 @@ unsigned int row_echelon_form(matrix *mat)
     return swap_counter;
 }
 
+
+unsigned int reduced_row_echelon_form(matrix *mat)
+{
+    row_echelon_form(mat);
+
+    unsigned int num_pivots = 0;
+    for(int i = mat->rows-1; i > -1; i--)
+    {
+       if(!is_null_vec(get_row(*mat, i)))
+       {
+            num_pivots++;
+       }
+    }
+    int *pivots_cols = malloc(num_pivots*sizeof(int));
+    for(int i = mat->rows-1; i > -1; i--)
+    {
+        if(!is_null_vec(get_row(*mat, i)))
+        {   
+            int first_non_zero_col = -1;
+            int j = 0;
+            while(mat->elements[i][j] == 0 && j < mat->cols)
+            {
+                j++;
+            }
+            first_non_zero_col = j;
+            pivots_cols[i] = j;
+            double factor = 1/mat->elements[i][first_non_zero_col];
+            scalar_mul_row(mat, i, factor);
+        }
+    }
+
+    for(int i = mat->rows-1; i > 0; i--)
+    {
+        if(!is_null_vec(get_row(*mat, i)))
+        {
+            int pivot_row = i;
+            int pivot_col = pivots_cols[i];
+            double pivot = mat->elements[pivot_row][pivot_col];
+            
+            printf("pivot = %f\n", pivot);
+            if(pivot !=0)
+            {
+                for(int u = pivot_row-1; u > -1; u--)
+                {
+                    double factor = -(mat->elements[u][pivot_col]);
+                    add_row_to_row(mat, u, pivot_row, factor);
+                }
+            }
+        }
+    }
+    free(pivots_cols);
+    return num_pivots;
+}
 
 double det(matrix mat)
 {
@@ -374,3 +427,37 @@ bool is_invertible(matrix mat)
 {
     return (det(mat) != 0);
 }
+
+
+/*
+vector solve_linear_equations(matrix A, vector b)
+{
+    if(is_invertible(A))
+    {
+        return mat_mul_vec(inverse(A), b);
+    }
+    else
+    {
+        //we have an infinit number of solutions or no solution at all
+        //we must find a way to :
+        //  to deduce in which case we are (easy )
+        //  describe the infinit set of solutions if it exists
+        
+    }
+}
+
+matrix inverse(matrix mat)
+{
+    if(!is_invertible(mat))
+    {
+        printf("the matrix is not invertible. Returning null matrix\n");
+        return null_matrix(mat.rows, mat.cols);
+    }
+
+    while mat != eye matrice:
+        we follow the row echelon form algorithm and for each transformation made,
+        we apply it to the identity matrix
+    
+    
+}
+*/
