@@ -217,10 +217,11 @@ matrix mat_mul_mat(matrix m1, matrix m2)
 }
 
 
+
 /*
 void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
 {
-    unsigned int rows = mat->rows;
+    unsigned int rows = mat.rows;
     if(r1 > rows || r2 > rows)
     {
         printf("pb de parametre sur swap_row\n");
@@ -313,7 +314,7 @@ unsigned int row_echelon_form(matrix *mat)
 }
 
 
-unsigned int reduced_row_echelon_form(matrix *mat)
+int* reduced_row_echelon_form(matrix *mat)
 {
     row_echelon_form(mat);
 
@@ -351,7 +352,6 @@ unsigned int reduced_row_echelon_form(matrix *mat)
             int pivot_col = pivots_cols[i];
             double pivot = mat->elements[pivot_row][pivot_col];
             
-            printf("pivot = %f\n", pivot);
             if(pivot !=0)
             {
                 for(int u = pivot_row-1; u > -1; u--)
@@ -362,9 +362,10 @@ unsigned int reduced_row_echelon_form(matrix *mat)
             }
         }
     }
-    free(pivots_cols);
-    return num_pivots;
+    return pivots_cols;
 }
+
+
 
 double det(matrix mat)
 {
@@ -428,23 +429,80 @@ bool is_invertible(matrix mat)
     return (det(mat) != 0);
 }
 
-
-/*
-vector solve_linear_equations(matrix A, vector b)
+matrix augmented_matrix_vector(matrix A, vector b)
 {
-    if(is_invertible(A))
+    matrix A_aug = allocate_matrix(A.rows, A.cols +1);
+    for(int i = 0; i < A.rows; i++)
     {
-        return mat_mul_vec(inverse(A), b);
+        for(int j = 0; j < A.cols; j++)
+        {
+            A_aug.elements[i][j] = A.elements[i][j];
+        }
     }
-    else
+    for(int i = 0; i < A.rows; i++)
     {
-        //we have an infinit number of solutions or no solution at all
-        //we must find a way to :
-        //  to deduce in which case we are (easy )
-        //  describe the infinit set of solutions if it exists
-        
+        A_aug.elements[i][A.cols] = b.coords[i];
+    }
+    return A_aug;
+}
+
+
+matrix augmented_matrix_matrix(matrix A, matrix B)
+{
+    matrix aug = allocate_matrix(A.rows, A.cols + B.cols);
+    for(int i = 0; i < A.rows; i++)
+    {
+        for(int j = 0; j < A.cols; j++)
+        {
+            aug.elements[i][j] = A.elements[i][j];
+        }
+    }
+    for(int i = 0; i < A.rows; i++)
+    {
+        for(int j = A.cols; j < A.rows+B.rows; j++)
+        {
+            aug.elements[i][j] = B.elements[i][j-A.rows];
+        }
+    }
+    return aug;
+}
+
+
+void split_mat_col(matrix aug, matrix *lp, matrix *rp, unsigned int split_col)
+{
+    *lp = allocate_matrix(aug.rows, split_col);
+    *rp = allocate_matrix(aug.rows, aug.cols-split_col);
+    for(int i = 0; i < aug.rows; i++)
+    {
+        for(int j = 0; j < split_col; j++)
+        {
+            lp->elements[i][j] = aug.elements[i][j];
+        }
+        for(int j = split_col; j < aug.cols; j++)
+        {
+            rp->elements[i][j-split_col] = aug.elements[i][j];
+        }
     }
 }
+
+
+void split_mat_row(matrix aug, matrix *up, matrix *bp, unsigned int split_row)
+{
+    *lp = allocate_matrix(split_rows, aug.cols);
+    *rp = allocate_matrix(aug.rows-split_row, aug.cols); 
+    for(int j = 0; j < aug.cols; j++)
+    {
+        for(int i = 0; i < split_row; i++)
+        {
+            up->elements[i][j] = aug.elements[i][j];
+        }
+        for(int i = split_row; i < aug.rows; i++)
+        {
+            bp->elements[i-split_row][j] = aug.elements[i][j];
+        }
+    }
+}
+
 
 matrix inverse(matrix mat)
 {
@@ -453,11 +511,59 @@ matrix inverse(matrix mat)
         printf("the matrix is not invertible. Returning null matrix\n");
         return null_matrix(mat.rows, mat.cols);
     }
+    matrix id = eye(mat.rows);
+    matrix aug_id = augmented_matrix_matrix(mat, id);
+    
+    
+    reduced_row_echelon_form(&aug_id);
+    matrix lp, rp;
+    split_mat_col(aug_id, &lp, &rp, id.cols);
+    deallocate_matrix(lp);
+    deallocate_matrix(id);
+    return rp;
+    //matrix invert = allocate_matrix(mat.rows, mat.cols);
 
-    while mat != eye matrice:
-        we follow the row echelon form algorithm and for each transformation made,
-        we apply it to the identity matrix
-    
-    
 }
-*/
+
+
+/*
+vector solve_linear_equations(matrix A, vector b)
+{
+    if(A.cols != b.dim)
+    {
+        printf("Dimension error \n");
+        return null_vector(b.dim);
+    }
+    matrix A_aug_b = augmented_matrix(A, b);
+    unsigned int rank_A = rank(A);
+    unsigned int rank_aug = rang(A_aug_b);
+    int* pivots_cols = reduced_row_echelon_form(A_aug_b);
+    if(rank_aug != rank_A)
+    {
+        printf("No solution for the system\n");
+        return null_vector(b.dim);
+    }
+    vector res = allocate_vector(b.dim);
+    if(rank_aug == A.cols)
+    {
+        for(int i = 0; i < rank_aug; i++)
+        {
+            res.coords[i] = pivots_cols[i];
+        }
+        return res;
+    }
+    else if (rank_aug < A.dim)
+    {
+        printf("infinity of solutions\n");
+        for(int i = 0; i < rank_aug; i++)
+        {
+            res.coords[i] = pivots_cols[i];
+        }
+        for(int i = rank_aug; i < A.dim; i++)
+        {
+            para
+        }
+    }
+    free(pivots_cols);
+    deallocate_matrix(A_aug_b);
+}*/

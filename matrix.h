@@ -14,7 +14,7 @@ void deallocate_matrix(matrix mat);
 void matrix_pp(matrix mat);
 
 matrix null_matrix(unsigned int rows, unsigned int cols);
-matrix id(unsigned int n);
+matrix eye(unsigned int n);
 
 matrix create_matrix_from_row_arrays(unsigned int rows, unsigned int cols, ...);
 matrix create_matrix(unsigned int rows, unsigned int cols, double elem[rows][cols]);
@@ -30,17 +30,34 @@ vector get_row(matrix mat, unsigned int row);
 vector mat_mul_vec(matrix mat, vector vec);
 matrix mat_mul_mat(matrix m1, matrix m2);
 
+
 void swap_row(matrix *mat, unsigned int r1, unsigned int r2);
 void scalar_mul_row(matrix *mat, unsigned int r, double s);
 void add_row_to_row(matrix *mat, unsigned int dest_row, unsigned int src_row, double s);
 
 unsigned int row_echelon_form(matrix *mat);
+int* reduced_row_echelon_form(matrix *mat);
+
+
 
 double det(matrix mat);
 double tr(matrix mat);
 
+
 bool is_invertible(matrix mat);
 
+matrix inverse(matrix mat);
+
 unsigned int rank(matrix mat);
+double *get_pivots(matrix mat);
+
+matrix augmented_mat_vec(matrix A, vector b);
+matrix augmented_mat_mat(matrix A, matrix B);
+
+void split_mat_col(matrix aug, matrix *lp, matrix *rp, unsigned int split_col);
+void split_mat_row(matrix aug, matrix *up, matrix *bp, unsigned int split_row);
+
+
+vector solve_linear_equations(matrix A, vector b);
 
 #endif
