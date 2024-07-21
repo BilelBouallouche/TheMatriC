@@ -1,7 +1,7 @@
 # TheMatriC
 
 It's just a personnal project to build my portfolio, learn C and apply what I've learned in maths class.
-The code may be bad, i'm not a developper, just a student in algebra.
+The code is bad, i'm not a developper, just a student in algebra.
 
 ## TODO 
 
@@ -19,7 +19,8 @@ The code may be bad, i'm not a developper, just a student in algebra.
 - [x] basic matrice representation
 - [x] basic operations on vectors
 - [x] basic operations on matrices
-- [ ] invert of a matrix
+- [x] invert of a matrix
+- [ ] better inversion
 - [ ] karatsuba ?
 - [ ] LU decomposition
 - [ ] Diagonalization, eigenvalues, eigenvectors
