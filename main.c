@@ -37,9 +37,13 @@ int main()
     }
     */
 
-   double m1_arr[2][2] = {{2, 3}, {4, 5}};
-   matrix m1 = create_matrix(2, 2, m1_arr);
-   matrix m1_inv = inverse(m1);
-   matrix_pp(m1_inv);
+   double m1_arr[3][3] = {{2, 1, -1}, {-3, -1, 2}, {-2, 1, 2}};
+   double v_arr[3] = {8, -11, -3};
+   matrix m1 = create_matrix(3, 3, m1_arr);
+   vector v = array_to_vector(v_arr, 3);
+   vector res = solve_linear_equations(m1, v);
+   printf("solution du systeme \n");
+   vector_pp(res);
+   deallocate_vector(res);
    deallocate_matrix(m1);
 }

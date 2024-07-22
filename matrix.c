@@ -96,21 +96,6 @@ matrix create_matrix(unsigned int rows, unsigned int cols, double elem[rows][col
     return mat;
 }
 
-/*
-matrix create_matrix_from_col_arrays(unsigned int rows, unsigned int cols, ...)
-{
-    matrix mat = allocate_matrix(rows, cols);
-    va_list args;
-    va_start(args, rows);
-    for(int i = 0; i < cols; i++)
-    {
-        double * cols_i = va_arg(args, double*);
-        mat.elements[row] = cols_i;
-    }
-    va_end(args);
-    return mat;
-}*/
-
 bool are_mats_equals(matrix mat1, matrix mat2)
 {
     if(mat1.rows != mat2.rows || mat1.cols != mat2.cols)
@@ -416,7 +401,6 @@ unsigned int rank(matrix mat)
         vector row_i = get_row(tmp, i);
         if(!is_null_vec(row_i))
         {
-            vector_pp(row_i);
             printf("\n");
             r++;
         }
@@ -429,7 +413,7 @@ bool is_invertible(matrix mat)
     return (det(mat) != 0);
 }
 
-matrix augmented_matrix_vector(matrix A, vector b)
+matrix augmented_mat_vec(matrix A, vector b)
 {
     matrix A_aug = allocate_matrix(A.rows, A.cols +1);
     for(int i = 0; i < A.rows; i++)
@@ -488,8 +472,8 @@ void split_mat_col(matrix aug, matrix *lp, matrix *rp, unsigned int split_col)
 
 void split_mat_row(matrix aug, matrix *up, matrix *bp, unsigned int split_row)
 {
-    *lp = allocate_matrix(split_rows, aug.cols);
-    *rp = allocate_matrix(aug.rows-split_row, aug.cols); 
+    *up = allocate_matrix(split_row, aug.cols);
+    *bp = allocate_matrix(aug.rows-split_row, aug.cols); 
     for(int j = 0; j < aug.cols; j++)
     {
         for(int i = 0; i < split_row; i++)
@@ -521,12 +505,10 @@ matrix inverse(matrix mat)
     deallocate_matrix(lp);
     deallocate_matrix(id);
     return rp;
-    //matrix invert = allocate_matrix(mat.rows, mat.cols);
 
 }
 
 
-/*
 vector solve_linear_equations(matrix A, vector b)
 {
     if(A.cols != b.dim)
@@ -534,10 +516,11 @@ vector solve_linear_equations(matrix A, vector b)
         printf("Dimension error \n");
         return null_vector(b.dim);
     }
-    matrix A_aug_b = augmented_matrix(A, b);
+    matrix A_aug_b = augmented_mat_vec(A, b);
+    reduced_row_echelon_form(&A);
     unsigned int rank_A = rank(A);
-    unsigned int rank_aug = rang(A_aug_b);
-    int* pivots_cols = reduced_row_echelon_form(A_aug_b);
+    unsigned int rank_aug = rank(A_aug_b);
+    int* pivots_cols = reduced_row_echelon_form(&A_aug_b);
     if(rank_aug != rank_A)
     {
         printf("No solution for the system\n");
@@ -548,22 +531,43 @@ vector solve_linear_equations(matrix A, vector b)
     {
         for(int i = 0; i < rank_aug; i++)
         {
-            res.coords[i] = pivots_cols[i];
+            res.coords[i] = A_aug_b.elements[i][A.cols];
         }
         return res;
     }
-    else if (rank_aug < A.dim)
+    /*
+    else if (rank_aug < A.cols)
     {
         printf("infinity of solutions\n");
-        for(int i = 0; i < rank_aug; i++)
+        int i = 0;
+        int num_free_variables = A.cols - rank_aug;
+        int *free_vars = malloc(sizeof(int)*num_free_variables);
+        for(int j = A.rows-1; j > -1; j--)
         {
-            res.coords[i] = pivots_cols[i];
+            if(is_null_vec(get_row(A, i)))
+            {
+                free_vars[i] = j;
+                i++;
+            }
         }
-        for(int i = rank_aug; i < A.dim; i++)
+        i = 0;
+        while(!is_null_vec(get_row(A, i)))
         {
-            para
-        }
+            printf("x_%d = ", i+1);
+            int pivot_col = pivots_cols[i];
+            double b_i = A_aug_b.elements[i][A.cols+1];
+            printf("b_%d ", i+1);
+            for(int j = 0; j < num_free_variables; j++)
+            {
+                int free_var = free_vars[j];
+                double coeff = -A.elements[i][free_var];
+                printf( "+ %f*x_%d", coeff, free_var+1);
+            }
+
+            i++;
+        }     */
     }
     free(pivots_cols);
     deallocate_matrix(A_aug_b);
-}*/
+    return res;
+}
