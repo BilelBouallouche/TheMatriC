@@ -14,4 +14,6 @@ double sum_on_double(double *to_sum, unsigned int size);
 
 void max_abs_array(double* array, unsigned int size, double *max, unsigned int *max_index);
 
+int gcd(int a, int b);
+
 #endif

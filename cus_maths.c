@@ -1,5 +1,7 @@
 #include "cus_maths.h"
 
+#include "cus_maths.h"
+
 double sum_on_double(double *to_sum, unsigned int size)
 {
     double res = 0;
@@ -25,4 +27,14 @@ void max_abs_array(double* array, unsigned int size, double *max, unsigned int *
     }
     *max_index = current_max_index;
     *max = current_max;
+}
+
+
+int gcd(int a, int b)
+{
+    if(a == 0) return b;
+    if(b == 0) return a;
+    if(a == b) return a;
+    if(a > b) return gcd(a-b, b);
+    else return gcd(a, b-a);
 }
