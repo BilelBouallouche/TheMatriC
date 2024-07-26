@@ -24,6 +24,23 @@ void deallocate_matrix(matrix mat)
     mat.rows = 0;
 }
 
+matrix* matrix_deepcopy(matrix *mat)
+{
+    matrix *res = malloc(sizeof(matrix));
+    res->rows = mat->rows;
+    res->cols = mat->cols;
+    res->elements = malloc(mat->rows*sizeof(double *));
+    for(int i = 0; i < res->rows; i++)
+    {
+        res->elements[i] = malloc(sizeof(double) * res->cols);
+        for(int j = 0; j < res->cols; j++)
+        {
+            res->elements[i][j] = mat->elements[i][j];
+        }
+    }
+    return res;
+}
+
 void matrix_pp(matrix mat)
 {
     for(int i = 0; i < mat.rows; i++)
@@ -202,28 +219,6 @@ matrix mat_mul_mat(matrix m1, matrix m2)
 }
 
 
-
-/*
-void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
-{
-    unsigned int rows = mat.rows;
-    if(r1 > rows || r2 > rows)
-    {
-        printf("pb de parametre sur swap_row\n");
-        return;
-    }
-    vector row1 = get_row(*mat, r1);
-    vector row2 = get_row(*mat, r2);
-    for(int i = 0; i < mat->cols; i++)
-    {
-        mat->elements[r1][i] = row2.coords[i];
-        mat->elements[r2][i] = row1.coords[i];
-    }
-    deallocate_vector(row1);
-    deallocate_vector(row2);
-}
-*/
-
 void swap_row(matrix *mat, unsigned int r1, unsigned int r2)
 {
     unsigned int rows = mat->rows;
@@ -364,13 +359,16 @@ double det(matrix mat)
     {
         return mat.elements[0][0]*mat.elements[1][1] - mat.elements[0][1]*mat.elements[1][0];
     }
-    matrix tmp = mat;
-    int swaps = row_echelon_form(&tmp);
+    matrix *tmp = matrix_deepcopy(&mat);
+    int swaps = row_echelon_form(tmp);
     double res = 1;
-    for(int i = 0; i < tmp.rows; i++)
+    for(int i = 0; i < tmp->rows; i++)
     {
-        res *= tmp.elements[i][i];
+        res *= tmp->elements[i][i];
     }
+    deallocate_matrix(*tmp);
+    free(tmp);
+
     return pow(-1, swaps)*res;
 }
 
@@ -381,7 +379,7 @@ double tr(matrix mat)
     {
         printf("pour calculer la trace faut une matrice carrée\n");
     }
-    double res;
+    double res = 0;
     for(int i = 0; i < mat.rows; i++)
     {
         res += mat.elements[i][i];
@@ -392,19 +390,18 @@ double tr(matrix mat)
 unsigned int rank(matrix mat)
 {
     unsigned int r = 0;
-    matrix tmp = mat;
-    row_echelon_form(&tmp);
-    matrix_pp(tmp);
-    printf("\n");
-    for(int i = 0; i < tmp.rows; i++)
+    matrix *tmp = matrix_deepcopy(&mat);
+    row_echelon_form(tmp);
+    for(int i = 0; i < tmp->rows; i++)
     {
-        vector row_i = get_row(tmp, i);
+        vector row_i = get_row(*tmp, i);
         if(!is_null_vec(row_i))
         {
-            printf("\n");
             r++;
         }
     }
+    deallocate_matrix(*tmp);
+    free(tmp);
     return r;
 }
 
@@ -563,4 +560,18 @@ vector rref_solve_linear_equations(matrix A, vector b)
     }*/
     deallocate_matrix(A_aug_b);
     return res;
+}
+
+
+void LU_decomposition(matrix A, matrix *L, matrix *U)
+{
+    if(A.cols != A.rows)
+    {
+        printf("Error mat is supposed to be squared for a LU decomposition\n");
+        return;
+    }
+    unsigned int n = A.rows;
+    *L = allocate_matrix(n, n);
+    *U = allocate_matrix(n, n);
+    
 }

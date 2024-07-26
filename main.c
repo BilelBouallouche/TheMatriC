@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include "matrix.h"
-#include "vector.h"
+#include "linalg/matrix.h"
+#include "linalg/vector.h"
 
 int main()
 {
@@ -41,7 +41,7 @@ int main()
    double v_arr[3] = {8, -11, -3};
    matrix m1 = create_matrix(3, 3, m1_arr);
    vector v = array_to_vector(v_arr, 3);
-   vector res = solve_linear_equations(m1, v);
+   vector res = rref_solve_linear_equations(m1, v);
    printf("solution du systeme \n");
    vector_pp(res);
    deallocate_vector(res);

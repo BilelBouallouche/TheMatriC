@@ -20,12 +20,14 @@ The code is bad, i'm not a developper, just a student in algebra.
 - [x] basic operations on vectors
 - [x] basic operations on matrices
 - [x] invert of a matrix
+- [ ] case of infinite number of solutions in a linear system of equations 
 - [ ] better inversion
+- [ ] better linear system resolution
 - [ ] karatsuba ?
 - [ ] LU decomposition
 - [ ] Diagonalization, eigenvalues, eigenvectors
 #### Z/nZ
-- [ ] representation
+- [ ] representation (ideally a smart representation to immediately be able to think about implementing groups, rings, fields);
 - [ ] operations
 - [ ] GCD, LCM
 - [ ] CRT 

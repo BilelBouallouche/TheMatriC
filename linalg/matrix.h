@@ -3,13 +3,15 @@
 
 #include "vector.h"
 
-typedef struct matrix {
+typedef struct matrix { 
     unsigned int rows, cols;
     double **elements;
 } matrix;
 
 matrix allocate_matrix(unsigned int rows, unsigned int cols);
 void deallocate_matrix(matrix mat);
+
+matrix* matrix_deepcopy(matrix *mat);
 
 void matrix_pp(matrix mat);
 
@@ -48,8 +50,7 @@ bool is_invertible(matrix mat);
 
 matrix inverse(matrix mat);
 
-unsigned int rank(matrix mat);
-double *get_pivots(matrix mat);
+unsigned int rank(matrix mat);;
 
 matrix augmented_mat_vec(matrix A, vector b);
 matrix augmented_mat_mat(matrix A, matrix B);
@@ -59,5 +60,7 @@ void split_mat_row(matrix aug, matrix *up, matrix *bp, unsigned int split_row);
 
 
 vector rref_solve_linear_equations(matrix A, vector b);
+
+void LU_decomposition(matrix A, matrix *L, matrix *U);
 
 #endif

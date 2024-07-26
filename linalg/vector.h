@@ -1,7 +1,7 @@
 #ifndef DEF_VECTOR
 #define DEF_VECTOR
 
-#include "cus_maths.h"
+#include "../cus_maths.h"
 
 typedef struct vector
 {
