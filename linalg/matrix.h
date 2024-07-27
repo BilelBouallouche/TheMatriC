@@ -11,7 +11,8 @@ typedef struct matrix {
 matrix allocate_matrix(unsigned int rows, unsigned int cols);
 void deallocate_matrix(matrix mat);
 
-matrix* matrix_deepcopy(matrix *mat);
+matrix* matrix_deepcopy_ptr(matrix *mat);
+void matrix_deepcopy(matrix*, matrix*);
 
 void matrix_pp(matrix mat);
 
@@ -61,6 +62,6 @@ void split_mat_row(matrix aug, matrix *up, matrix *bp, unsigned int split_row);
 
 vector rref_solve_linear_equations(matrix A, vector b);
 
-void LU_decomposition(matrix A, matrix *L, matrix *U);
+void Doolittle_LU_decomposition(matrix A, matrix *L, matrix *U);
 
 #endif

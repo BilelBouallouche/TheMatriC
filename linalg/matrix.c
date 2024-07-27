@@ -24,7 +24,7 @@ void deallocate_matrix(matrix mat)
     mat.rows = 0;
 }
 
-matrix* matrix_deepcopy(matrix *mat)
+matrix* matrix_deepcopy_ptr(matrix *mat)
 {
     matrix *res = malloc(sizeof(matrix));
     res->rows = mat->rows;
@@ -39,6 +39,21 @@ matrix* matrix_deepcopy(matrix *mat)
         }
     }
     return res;
+}
+
+void matrix_deepcopy(matrix *src, matrix *dest)
+{
+    dest->rows = src->rows;
+    dest->cols = src->cols;
+    dest->elements = malloc(src->rows*sizeof(double *));
+    for(int i = 0; i < dest->rows; i++)
+    {
+        dest->elements[i] = malloc(sizeof(double) * dest->cols);
+        for(int j = 0; j < dest->cols; j++)
+        {
+            dest->elements[i][j] = src->elements[i][j];
+        }
+    }    
 }
 
 void matrix_pp(matrix mat)
@@ -359,7 +374,7 @@ double det(matrix mat)
     {
         return mat.elements[0][0]*mat.elements[1][1] - mat.elements[0][1]*mat.elements[1][0];
     }
-    matrix *tmp = matrix_deepcopy(&mat);
+    matrix *tmp = matrix_deepcopy_ptr(&mat);
     int swaps = row_echelon_form(tmp);
     double res = 1;
     for(int i = 0; i < tmp->rows; i++)
@@ -390,7 +405,7 @@ double tr(matrix mat)
 unsigned int rank(matrix mat)
 {
     unsigned int r = 0;
-    matrix *tmp = matrix_deepcopy(&mat);
+    matrix *tmp = matrix_deepcopy_ptr(&mat);
     row_echelon_form(tmp);
     for(int i = 0; i < tmp->rows; i++)
     {
@@ -563,7 +578,7 @@ vector rref_solve_linear_equations(matrix A, vector b)
 }
 
 
-void LU_decomposition(matrix A, matrix *L, matrix *U)
+void Doolittle_LU_decomposition(matrix A, matrix *L, matrix *U)
 {
     if(A.cols != A.rows)
     {
@@ -571,7 +586,37 @@ void LU_decomposition(matrix A, matrix *L, matrix *U)
         return;
     }
     unsigned int n = A.rows;
-    *L = allocate_matrix(n, n);
-    *U = allocate_matrix(n, n);
+    *U = null_matrix(n, n);
+    *L = null_matrix(n, n);
+
+    for(int i = 0; i < n; i++)
+    {
+        for(int j = i; j < n; j++)
+        {
+            double *to_sum = malloc(sizeof(double)*i);
+            for(int k = 0; k < i; k++)
+            {
+                to_sum[k] = L->elements[i][k]*U->elements[k][j];
+            }
+            U->elements[i][j] = A.elements[i][j]-sum_on_double(to_sum, i);
+        }
+        for(int j = i; j < n; j++)
+        {
+            if(i == j)
+            {
+                L->elements[i][j] = 1;
+            }
+            else
+            {
+                double *to_sum = malloc(sizeof(double)*j);
+                for(int k = 0; k < i; k++)
+                {
+                    to_sum[k] = L->elements[j][k]*U->elements[k][j];
+                }
+                
+                L->elements[j][i] = (A.elements[j][i] - sum_on_double(to_sum, j))/U->elements[i][i];
+            }
+        }
+    }
     
 }

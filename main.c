@@ -37,13 +37,17 @@ int main()
     }
     */
 
-   double m1_arr[3][3] = {{2, 1, -1}, {-3, -1, 2}, {-2, 1, 2}};
-   double v_arr[3] = {8, -11, -3};
-   matrix m1 = create_matrix(3, 3, m1_arr);
-   vector v = array_to_vector(v_arr, 3);
-   vector res = rref_solve_linear_equations(m1, v);
-   printf("solution du systeme \n");
-   vector_pp(res);
-   deallocate_vector(res);
-   deallocate_matrix(m1);
+    double m1_arr[3][3] = {{2,- 1, 0}, {-1, 2, -1}, {0, -1, 2}};
+
+    matrix m1 = create_matrix(3, 3, m1_arr);
+    matrix l;
+    matrix u;
+    Doolittle_LU_decomposition(m1, &l, &u);
+    matrix_pp(l);
+    matrix_pp(u);
+    matrix_pp(mat_mul_mat(l, u));
+
+    deallocate_matrix(u);
+    deallocate_matrix(l);
+    deallocate_matrix(m1);
 }
