@@ -85,7 +85,7 @@ matrix null_matrix(unsigned int rows, unsigned int cols)
 
 matrix eye(unsigned int n)
 {
-    matrix identity = null_matrix(n, n);
+    matrix identity = allocate_matrix(n, n);
     for(int i = 0; i  < n; i++)
     {
         for(int j = 0; j < n; j++)
@@ -93,6 +93,10 @@ matrix eye(unsigned int n)
             if(i == j)
             {
                 identity.elements[i][j] = 1;
+            }
+            else
+            {
+                identity.elements[i][j] = 0;
             }
         }
     }
@@ -620,3 +624,32 @@ void Doolittle_LU_decomposition(matrix A, matrix *L, matrix *U)
     }
     
 }
+
+/*
+vector LU_solve_linear_equations(matrix A, vector b)
+{
+    if(A.rows != A.cols)
+    {
+        printf("Matrix must be squared for LU\n");
+        return null_vector(b.dim);
+    }
+    matrix L, U;
+    Doolittle_LU_decomposition(A, &L, &U);
+    //Ax = b <=> (LU)x = b <=> L(Ux) = b.
+    double ys[b.dim];
+    for(int i = 0; i < b.dim; i++)
+    {
+        double *to_sum = malloc(sizeof(double)*i);
+        for(int j = 1; j < i; j++)
+        {
+            to_sum[j] = L.elements[i][j]*ys[j];
+        }
+        double sum = sum_on_double(to_sum, i);
+        ys[i] = (b.coords[i]-sum)/L.elements[i][i];
+    }
+    double xs[b.dim];
+    for(int i = 0; i < b.dim; i++)
+    {
+        
+    }
+}*/

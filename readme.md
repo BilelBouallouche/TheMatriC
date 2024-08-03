@@ -24,15 +24,6 @@ The code is bad, i'm not a developper, just a student in algebra.
 - [ ] better inversion
 - [ ] better linear system resolution
 - [ ] karatsuba ?
-- [ ] LU decomposition
+- [x] LU decomposition
+- [ ] solve system of equations with LU decomposition
 - [ ] Diagonalization, eigenvalues, eigenvectors
-#### Z/nZ
-- [ ] representation (ideally a smart representation to immediately be able to think about implementing groups, rings, fields);
-- [ ] operations
-- [ ] GCD, LCM
-- [ ] CRT 
-
-#### Polynomials
-- [ ] representation
-- [ ] operations
-- [ ] irreductibility tests ?
